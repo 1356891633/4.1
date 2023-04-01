@@ -20,12 +20,12 @@ public class Elevator implements Runnable {
     // private static final String OUT_FORMAT = "[%.4f]OUT-%d-%d-%d %n";
     // private static final String MAINTAIN_ABLE_FORMAT = "[%.4f]MAINTAIN_ABLE-%d %n";
 
-    private static final String ARRIVE_FORMAT = "[%.4f]ARRIVE-%d楼-梯%d %n";
-    private static final String CLOSE_FORMAT = "[%.4f]CLOSE-%d楼-梯%d %n";
-    private static final String OPEN_FORMAT = "[%.4f]OPEN-%d楼-梯%d %n";
-    private static final String IN_FORMAT = "[%.4f]IN-乘客%d-%d楼-梯%d %n";
-    private static final String OUT_FORMAT = "[%.4f]OUT-乘客%d-%d楼-梯%d %n";
-    private static final String MAINTAIN_ABLE_FORMAT = "[%.4f]MAINTAIN_ABLE-维护中-梯%d %n";
+    private static final String ARRIVE_FORMAT = "[%.4f]ARRIVE-%d-%d %n";
+    private static final String CLOSE_FORMAT = "[%.4f]CLOSE-%d-%d %n";
+    private static final String OPEN_FORMAT = "[%.4f]OPEN-%d-%d %n";
+    private static final String IN_FORMAT = "[%.4f]IN-%d-%d-%d %n";
+    private static final String OUT_FORMAT = "[%.4f]OUT-%d-%d-%d %n";
+    private static final String MAINTAIN_ABLE_FORMAT = "[%.4f]MAINTAIN_ABLE-%d %n";
 
 
     // 开门需要的时间，单位：毫秒
@@ -81,7 +81,6 @@ public class Elevator implements Runnable {
                 }
                 // 如果有人在等这部电梯,则将他们重新调度
                 if (!CommonUtil.isEmptyCollection(waitPerson)) {
-                    System.out.println(waitPerson.size());
                     for (ExtensionPersonRequest person : waitPerson) {
                         person.setRequestTime(runTime());
                         ElevatorSchedule.addRequest(person);
@@ -179,7 +178,6 @@ public class Elevator implements Runnable {
      */
     private void getEveryoneOffElevator() {
         // TODO yellowgg 测完记得删这句话
-        System.out.println("电梯维护,所有人下去");
         for (ExtensionPersonRequest extensionPersonRequest : inPerson) {
             System.out.printf(OUT_FORMAT, runTime(), extensionPersonRequest.getPersonRequest().getPersonId(), currentFloor, id);
         }
