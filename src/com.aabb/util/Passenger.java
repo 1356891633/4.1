@@ -59,7 +59,8 @@ public class Passenger {
     }
 
 
-    private void parseFromFloor() {  //[9.6]1-FROM-4-TO-5
+    private void parseFromFloor() {
+        //[9.6]1-FROM-4-TO-5
         Pattern pattern = Pattern.compile("(?<=\\-).+?(?=\\-)");
         Matcher m = pattern.matcher(this.inputString);
         int cnt = 0;
