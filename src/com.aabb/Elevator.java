@@ -13,6 +13,14 @@ import java.util.stream.Collectors;
 
 public class Elevator implements Runnable {
 
+    private static final String ARRIVE_FORMAT = "[%.4f]ARRIVE-%d-%d %n";
+    private static final String CLOSE_FORMAT = "[%.4f]CLOSE-%d-%d %n";
+    private static final String OPEN_FORMAT = "[%.4f]OPEN-%d-%d %n";
+    private static final String IN_FORMAT = "[%.4f]IN-%d-%d-%d %n";
+    private static final String OUT_FORMAT = "[%.4f]OUT-%d-%d-%d %n";
+
+    private static final String MAINTAIN_ABLE_FORMAT = "[%.4f]MAINTAIN_ABLE-%d %n";
+
     // 开门需要的时间，单位：毫秒
     private static final int OPEN_TIME = 200;
     // 关门需要的时间，单位：毫秒
@@ -65,7 +73,7 @@ public class Elevator implements Runnable {
 
             if (this.elevatorStatus == ElevatorStatus.MAINTAINING) {
                 // 开始维护
-                System.out.printf("[%.4f]MAINTAIN_ABLE-%d %n", runTime(), id);
+                System.out.printf(MAINTAIN_ABLE_FORMAT, runTime(), id);
                 synchronized (this) {
                     try {
                         this.wait();
@@ -91,7 +99,7 @@ public class Elevator implements Runnable {
                 this.currentFloor++;
                 try {
                     TimeUnit.MILLISECONDS.sleep(moveTime);
-                    System.out.printf("[%.4f]ARRIVE-%d-%d %n", runTime(), currentFloor, id);
+                    System.out.printf(ARRIVE_FORMAT, runTime(), currentFloor, id);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -111,7 +119,7 @@ public class Elevator implements Runnable {
                 this.currentFloor--;
                 try {
                     TimeUnit.MILLISECONDS.sleep(moveTime);
-                    System.out.printf("[%.4f]ARRIVE-%d-%d %n", runTime(), currentFloor, id);
+                    System.out.printf(ARRIVE_FORMAT, runTime(), currentFloor, id);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -150,7 +158,6 @@ public class Elevator implements Runnable {
             }
 
 
-
         }
     }
 
@@ -159,7 +166,7 @@ public class Elevator implements Runnable {
             // 关门
             try {
                 TimeUnit.MILLISECONDS.sleep(CLOSE_TIME);
-                System.out.printf("[%.4f]CLOSE-%d-%d %n", runTime(), currentFloor, id);
+                System.out.printf(CLOSE_FORMAT, runTime(), currentFloor, id);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -185,7 +192,7 @@ public class Elevator implements Runnable {
         // 开门
         try {
             TimeUnit.MILLISECONDS.sleep(OPEN_TIME);
-            System.out.printf("[%.4f]OPEN-%d-%d %n", runTime(), currentFloor, id);
+            System.out.printf(OPEN_FORMAT, runTime(), currentFloor, id);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -215,14 +222,14 @@ public class Elevator implements Runnable {
                 if (up) {
                     List<ExtensionPersonRequest> upPerson = getUpPerson();
                     for (ExtensionPersonRequest person : upPerson) {
-                        System.out.printf("[%.4f]IN-%d-%d-%d %n", runTime(), person.getPersonRequest().getPersonId(), currentFloor, id);
+                        System.out.printf(IN_FORMAT, runTime(), person.getPersonRequest().getPersonId(), currentFloor, id);
                     }
                     inPerson.addAll(upPerson);
                     setStatus(ElevatorStatus.UP);
                 } else {
                     List<ExtensionPersonRequest> upPerson = getDownPerson();
                     for (ExtensionPersonRequest person : upPerson) {
-                        System.out.printf("[%.4f]IN-%d-%d-%d %n", runTime(), person.getPersonRequest().getPersonId(), currentFloor, id);
+                        System.out.printf(IN_FORMAT, runTime(), person.getPersonRequest().getPersonId(), currentFloor, id);
                     }
                     inPerson.addAll(upPerson);
                     setStatus(ElevatorStatus.DOWN);
@@ -237,14 +244,14 @@ public class Elevator implements Runnable {
                     if (!CommonUtil.isEmptyCollection(downPerson)) {
                         inPerson.addAll(downPerson);
                         for (ExtensionPersonRequest person : downPerson) {
-                            System.out.printf("[%.4f]IN-%d-%d-%d %n", runTime(), person.getPersonRequest().getPersonId(), currentFloor, id);
+                            System.out.printf(IN_FORMAT, runTime(), person.getPersonRequest().getPersonId(), currentFloor, id);
                         }
                         this.setStatus(ElevatorStatus.DOWN);
                     }
                 } else {
                     List<ExtensionPersonRequest> upPerson = getUpPerson();
                     for (ExtensionPersonRequest person : upPerson) {
-                        System.out.printf("[%.4f]IN-%d-%d-%d %n", runTime(), person.getPersonRequest().getPersonId(), currentFloor, id);
+                        System.out.printf(IN_FORMAT, runTime(), person.getPersonRequest().getPersonId(), currentFloor, id);
                     }
                     inPerson.addAll(upPerson);
                 }
@@ -256,7 +263,7 @@ public class Elevator implements Runnable {
                     List<ExtensionPersonRequest> upPerson = getUpPerson();
                     if (!CommonUtil.isEmptyCollection(upPerson)) {
                         for (ExtensionPersonRequest person : upPerson) {
-                            System.out.printf("[%.4f]IN-%d-%d-%d %n", runTime(), person.getPersonRequest().getPersonId(), currentFloor, id);
+                            System.out.printf(IN_FORMAT, runTime(), person.getPersonRequest().getPersonId(), currentFloor, id);
                         }
                         inPerson.addAll(upPerson);
                         this.setStatus(ElevatorStatus.UP);
@@ -265,7 +272,7 @@ public class Elevator implements Runnable {
                     List<ExtensionPersonRequest> downPerson = getDownPerson();
                     if (!CommonUtil.isEmptyCollection(downPerson)) {
                         for (ExtensionPersonRequest person : downPerson) {
-                            System.out.printf("[%.4f]IN-%d-%d-%d %n", runTime(), person.getPersonRequest().getPersonId(), currentFloor, id);
+                            System.out.printf(IN_FORMAT, runTime(), person.getPersonRequest().getPersonId(), currentFloor, id);
                         }
                         inPerson.addAll(downPerson);
                     }
@@ -315,8 +322,7 @@ public class Elevator implements Runnable {
                 return;
             }
             for (ExtensionPersonRequest extensionPersonRequest : remove) {
-                System.out.printf("[%.4f]OUT-%d-%d-%d %n", runTime(),
-                        extensionPersonRequest.getPersonRequest().getPersonId(), currentFloor, id);
+                System.out.printf(OUT_FORMAT, runTime(), extensionPersonRequest.getPersonRequest().getPersonId(), currentFloor, id);
 
             }
             // 下电梯
