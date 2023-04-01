@@ -71,8 +71,9 @@ public class Elevator implements Runnable {
                 // 将所有人在原地放下
                 if (!CommonUtil.isEmptyCollection(inPerson)) {
                     Boolean openTheDoor = openDoor();
-                    outPassenger();
+                    getEveryoneOffElevator();
                     closeDoor(openTheDoor);
+                    // TODO yellowgg 应当呼叫别的电梯来送这些人 看看是关门前还是关门后呼叫
                 }
 
                 // 电梯改为维护状态
@@ -167,6 +168,18 @@ public class Elevator implements Runnable {
 
 
         }
+    }
+
+    /**
+     * 让所有人下电梯
+     */
+    private void getEveryoneOffElevator() {
+        // TODO yellowgg 测完记得删这句话
+        System.out.println("电梯维护,所有人下去");
+        for (ExtensionPersonRequest extensionPersonRequest : inPerson) {
+            System.out.printf(OUT_FORMAT, runTime(), extensionPersonRequest.getPersonRequest().getPersonId(), currentFloor, id);
+        }
+        inPerson.clear();
     }
 
     private void closeDoor(Boolean openTheDoor) {
