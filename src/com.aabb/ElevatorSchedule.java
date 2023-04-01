@@ -14,28 +14,16 @@ import java.util.stream.Collectors;
 
 public class ElevatorSchedule {
 
-    private ConcurrentLinkedQueue<Request> requests;
+    private static final ConcurrentLinkedQueue<Request> requests = new ConcurrentLinkedQueue<>();
 
-    private List<Elevator> elevators; // 电梯列表
+    private static List<Elevator> elevators; // 电梯列表
 
-    public ElevatorSchedule(List<Elevator> elevators) {
-        this.elevators = elevators;
-        this.requests = new ConcurrentLinkedQueue<>();
+
+    public static void setElevators(List<Elevator> elevators) {
+        ElevatorSchedule.elevators = elevators;
     }
 
-    public void addElevator(Elevator elevator) {
-        elevators.add(elevator);
-        new Thread(elevator).start();
-    }
-
-    public void start() {
-        // 电梯开始运行
-        for (Elevator elevator : elevators) {
-            new Thread(elevator).start();
-        }
-    }
-
-    public void schedule() {
+    public static void schedule() {
         Request request = requests.poll();
         if (request == null) {
         } else if (request instanceof ExtensionPersonRequest) {
@@ -83,8 +71,20 @@ public class ElevatorSchedule {
 
     }
 
-    public void addRequest(Request request) {
+    public static void addRequest(Request request) {
         requests.add(request);
+    }
+
+    public static void addElevator(Elevator elevator) {
+        elevators.add(elevator);
+        new Thread(elevator).start();
+    }
+
+    public static void start() {
+        // 电梯开始运行
+        for (Elevator elevator : elevators) {
+            new Thread(elevator).start();
+        }
     }
 
 }

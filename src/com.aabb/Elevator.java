@@ -28,7 +28,6 @@ public class Elevator implements Runnable {
     private static final String MAINTAIN_ABLE_FORMAT = "[%.4f]MAINTAIN_ABLE-维护中-梯%d %n";
 
 
-
     // 开门需要的时间，单位：毫秒
     private static final int OPEN_TIME = 200;
     // 关门需要的时间，单位：毫秒
@@ -73,9 +72,12 @@ public class Elevator implements Runnable {
                     Boolean openTheDoor = openDoor();
                     getEveryoneOffElevator();
                     closeDoor(openTheDoor);
-                    // TODO yellowgg 应当呼叫别的电梯来送这些人 看看是关门前还是关门后呼叫
-
-
+                    // 重新调度这些人
+                    for (ExtensionPersonRequest person : inPerson) {
+                        person.getPersonRequest().setFromFloor(currentFloor);
+                        ElevatorSchedule.addRequest(person);
+                        ElevatorSchedule.schedule();
+                    }
 
                 }
                 // 开始维护
@@ -172,7 +174,6 @@ public class Elevator implements Runnable {
         for (ExtensionPersonRequest extensionPersonRequest : inPerson) {
             System.out.printf(OUT_FORMAT, runTime(), extensionPersonRequest.getPersonRequest().getPersonId(), currentFloor, id);
         }
-        inPerson.clear();
     }
 
     private void closeDoor(Boolean openTheDoor) {

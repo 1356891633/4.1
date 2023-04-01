@@ -23,8 +23,10 @@ public class MainClass {
             Elevator elevator = new Elevator(i);
             elevators.add(elevator);
         }
-        ElevatorSchedule levatorSchedule = new ElevatorSchedule(elevators);
-        levatorSchedule.start();
+
+        ElevatorSchedule.setElevators(elevators);
+        ElevatorSchedule.start();
+
         ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
         while (true) {
             Request request = elevatorInput.nextRequest();
@@ -32,8 +34,8 @@ public class MainClass {
                 break;
             }
             scheduledExecutorService.schedule(() -> {
-                levatorSchedule.addRequest(request);
-                levatorSchedule.schedule();
+                ElevatorSchedule.addRequest(request);
+                ElevatorSchedule.schedule();
             }, (long)(request.getRequestTime() * 1000L), TimeUnit.MILLISECONDS);
         }
         elevatorInput.close();
