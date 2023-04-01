@@ -34,8 +34,10 @@ public class MainClass {
                 break;
             }
             scheduledExecutorService.schedule(() -> {
-                ElevatorSchedule.addRequest(request);
-                ElevatorSchedule.schedule();
+                synchronized (MainClass.class){
+                    ElevatorSchedule.addRequest(request);
+                    ElevatorSchedule.schedule();
+                }
             }, (long)(request.getRequestTime() * 1000L), TimeUnit.MILLISECONDS);
         }
         elevatorInput.close();

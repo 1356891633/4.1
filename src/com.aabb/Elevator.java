@@ -76,8 +76,10 @@ public class Elevator implements Runnable {
                     // 重新调度这些人
                     for (ExtensionPersonRequest person : inPerson) {
                         person.getPersonRequest().setFromFloor(currentFloor);
-                        ElevatorSchedule.addRequest(person);
-                        ElevatorSchedule.schedule();
+                        synchronized (MainClass.class){
+                            ElevatorSchedule.addRequest(person);
+                            ElevatorSchedule.schedule();
+                        }
                     }
 
                 }
