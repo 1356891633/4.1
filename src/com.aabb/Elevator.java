@@ -13,13 +13,21 @@ import java.util.stream.Collectors;
 
 public class Elevator implements Runnable {
 
-    private static final String ARRIVE_FORMAT = "[%.4f]ARRIVE-%d-%d %n";
-    private static final String CLOSE_FORMAT = "[%.4f]CLOSE-%d-%d %n";
-    private static final String OPEN_FORMAT = "[%.4f]OPEN-%d-%d %n";
-    private static final String IN_FORMAT = "[%.4f]IN-%d-%d-%d %n";
-    private static final String OUT_FORMAT = "[%.4f]OUT-%d-%d-%d %n";
+    // private static final String ARRIVE_FORMAT = "[%.4f]ARRIVE-%d-%d %n";
+    // private static final String CLOSE_FORMAT = "[%.4f]CLOSE-%d-%d %n";
+    // private static final String OPEN_FORMAT = "[%.4f]OPEN-%d-%d %n";
+    // private static final String IN_FORMAT = "[%.4f]IN-%d-%d-%d %n";
+    // private static final String OUT_FORMAT = "[%.4f]OUT-%d-%d-%d %n";
+    // private static final String MAINTAIN_ABLE_FORMAT = "[%.4f]MAINTAIN_ABLE-%d %n";
 
-    private static final String MAINTAIN_ABLE_FORMAT = "[%.4f]MAINTAIN_ABLE-%d %n";
+    private static final String ARRIVE_FORMAT = "[%.4f]ARRIVE-%d楼-梯%d %n";
+    private static final String CLOSE_FORMAT = "[%.4f]CLOSE-%d楼-梯%d %n";
+    private static final String OPEN_FORMAT = "[%.4f]OPEN-%d楼-梯%d %n";
+    private static final String IN_FORMAT = "[%.4f]IN-乘客%d-%d楼-梯%d %n";
+    private static final String OUT_FORMAT = "[%.4f]OUT-乘客%d-%d楼-梯%d %n";
+    private static final String MAINTAIN_ABLE_FORMAT = "[%.4f]MAINTAIN_ABLE-维护中-梯%d %n";
+
+
 
     // 开门需要的时间，单位：毫秒
     private static final int OPEN_TIME = 200;
