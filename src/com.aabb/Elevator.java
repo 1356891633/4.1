@@ -75,12 +75,15 @@ public class Elevator implements Runnable {
                     // 重新调度这些人
                     for (ExtensionPersonRequest person : inPerson) {
                         person.getPersonRequest().setFromFloor(currentFloor);
+                        person.setRequestTime(runTime());
                         ElevatorSchedule.addRequest(person);
                     }
                 }
                 // 如果有人在等这部电梯,则将他们重新调度
                 if (!CommonUtil.isEmptyCollection(waitPerson)) {
+                    System.out.println(waitPerson.size());
                     for (ExtensionPersonRequest person : waitPerson) {
+                        person.setRequestTime(runTime());
                         ElevatorSchedule.addRequest(person);
                     }
                 }
