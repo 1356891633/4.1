@@ -34,7 +34,7 @@ public class MainClass {
             scheduledExecutorService.schedule(() -> {
                 levatorSchedule.addRequest(request);
                 levatorSchedule.schedule();
-            }, (long)request.getRequestTime() * 1000L, TimeUnit.MILLISECONDS);
+            }, (long)(request.getRequestTime() * 1000L), TimeUnit.MILLISECONDS);
         }
         elevatorInput.close();
     }
