@@ -54,8 +54,6 @@ public class Elevator implements Runnable {
     private volatile boolean isInit = true;
     private long init_timestamp;
 
-    private boolean canRunning = true;
-
     public Elevator(int id) {
         this.id = id;
         this.currentFloor = 1;
@@ -66,7 +64,7 @@ public class Elevator implements Runnable {
 
     @Override
     public void run() {
-        while (canRunning) {
+        while (true) {
 
             // 维护开始
             if (this.elevatorStatus == ElevatorStatus.MAINTAIN_START) {
@@ -84,9 +82,6 @@ public class Elevator implements Runnable {
                 System.out.printf(MAINTAIN_ABLE_FORMAT, runTime(), id);
 
                 // 将电梯退出系统
-                canRunning = false;
-            }
-            if (!canRunning) {
                 break;
             }
 
