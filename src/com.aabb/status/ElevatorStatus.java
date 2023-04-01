@@ -13,7 +13,5 @@ public enum ElevatorStatus {
     // 维护开始
     MAINTAIN_START,
 
-    // 维护中
-    MAINTAINING,
     ;
 }

@@ -33,6 +33,7 @@ public class Elevator implements Runnable {
     // 关门需要的时间，单位：毫秒
     private static final int CLOSE_TIME = 200;
     private static final int MAX_FLOOR = 11;
+    boolean canRunning = true;
     // 满载人数 默认为6
     private int maxPersonNum = 6;
     // 移动一层楼需要的时间，单位：毫秒 默认400 也就是0.4s
@@ -40,7 +41,7 @@ public class Elevator implements Runnable {
     // 电梯id
     private int id;
     // 电梯的状态
-    private ElevatorStatus elevatorStatus;
+    private volatile ElevatorStatus elevatorStatus;
     // 电梯中的人数
     private int passengerNum;
     // 在电梯里的人
@@ -52,8 +53,6 @@ public class Elevator implements Runnable {
     private double initTime;
     private volatile boolean isInit = true;
     private long init_timestamp;
-
-    boolean canRunning = true;
 
     public Elevator(int id) {
         this.id = id;
@@ -76,13 +75,16 @@ public class Elevator implements Runnable {
                     // 重新调度这些人
                     for (ExtensionPersonRequest person : inPerson) {
                         person.getPersonRequest().setFromFloor(currentFloor);
-                        synchronized (MainClass.class){
-                            ElevatorSchedule.addRequest(person);
-                            ElevatorSchedule.schedule();
-                        }
+                        ElevatorSchedule.addRequest(person);
                     }
-
                 }
+                // 如果有人在等这部电梯,则将他们重新调度
+                if (!CommonUtil.isEmptyCollection(waitPerson)) {
+                    for (ExtensionPersonRequest person : waitPerson) {
+                        ElevatorSchedule.addRequest(person);
+                    }
+                }
+
                 // 开始维护
                 System.out.printf(MAINTAIN_ABLE_FORMAT, runTime(), id);
 
@@ -419,6 +421,10 @@ public class Elevator implements Runnable {
 
     public void setStatus(ElevatorStatus elevatorStatus) {
         synchronized (this) {
+            // 如果被维护了,就不能继续更新状态,以维护结束
+            if (this.elevatorStatus == ElevatorStatus.MAINTAIN_START) {
+                return;
+            }
             this.elevatorStatus = elevatorStatus;
         }
     }

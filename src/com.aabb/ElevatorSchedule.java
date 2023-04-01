@@ -73,6 +73,7 @@ public class ElevatorSchedule {
 
     public static void addRequest(Request request) {
         requests.add(request);
+        ElevatorSchedule.schedule();
     }
 
     public static void addElevator(Elevator elevator) {
