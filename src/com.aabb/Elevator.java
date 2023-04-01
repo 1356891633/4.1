@@ -54,6 +54,8 @@ public class Elevator implements Runnable {
     private volatile boolean isInit = true;
     private long init_timestamp;
 
+    private boolean canRunning = true;
+
     public Elevator(int id) {
         this.id = id;
         this.currentFloor = 1;
@@ -64,7 +66,7 @@ public class Elevator implements Runnable {
 
     @Override
     public void run() {
-        while (true) {
+        while (canRunning) {
 
             // 维护开始
             if (this.elevatorStatus == ElevatorStatus.MAINTAIN_START) {
@@ -74,22 +76,18 @@ public class Elevator implements Runnable {
                     getEveryoneOffElevator();
                     closeDoor(openTheDoor);
                     // TODO yellowgg 应当呼叫别的电梯来送这些人 看看是关门前还是关门后呼叫
+
+
+
                 }
-
-                // 电梯改为维护状态
-                this.setStatus(ElevatorStatus.MAINTAINING);
-            }
-
-            if (this.elevatorStatus == ElevatorStatus.MAINTAINING) {
                 // 开始维护
                 System.out.printf(MAINTAIN_ABLE_FORMAT, runTime(), id);
-                synchronized (this) {
-                    try {
-                        this.wait();
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
+
+                // 将电梯退出系统
+                canRunning = false;
+            }
+            if (!canRunning) {
+                break;
             }
 
             if (inPerson.size() == 0 && waitPerson.size() == 0) {
