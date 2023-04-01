@@ -66,7 +66,7 @@ public class Elevator implements Runnable {
     public void run() {
         while (canRunning) {
             // 维护开始
-            if (this.elevatorStatus == ElevatorStatus.MAINTAIN_START) {
+            if (getStatus() == ElevatorStatus.MAINTAIN_START) {
                 // 将所有人在原地放下
                 if (!CommonUtil.isEmptyCollection(inPerson)) {
                     Boolean openTheDoor = openDoor();
@@ -108,7 +108,7 @@ public class Elevator implements Runnable {
 
 
             // 上行
-            if (this.elevatorStatus == ElevatorStatus.UP) {
+            if (getStatus() == ElevatorStatus.UP) {
                 this.currentFloor++;
                 try {
                     TimeUnit.MILLISECONDS.sleep(moveTime);
@@ -128,7 +128,7 @@ public class Elevator implements Runnable {
             }
 
             // 下行
-            if (this.elevatorStatus == ElevatorStatus.DOWN) {
+            if (getStatus() == ElevatorStatus.DOWN) {
                 this.currentFloor--;
                 try {
                     TimeUnit.MILLISECONDS.sleep(moveTime);
@@ -147,7 +147,7 @@ public class Elevator implements Runnable {
             }
 
             // 空闲
-            if (this.elevatorStatus == ElevatorStatus.IDLE) {
+            if (getStatus() == ElevatorStatus.IDLE) {
                 if (!CommonUtil.isEmptyCollection(waitPerson)) {
                     // 取优先级最高的人
                     ExtensionPersonRequest request = waitPerson.stream().sorted().collect(Collectors.toList()).get(0);
@@ -355,15 +355,15 @@ public class Elevator implements Runnable {
 
             this.passengerNum = inPerson.size();
             if (passengerNum == 0) {
-                this.setStatus(ElevatorStatus.IDLE);
+                setStatus(ElevatorStatus.IDLE);
             }
 
             // 到这肯定还有人在电梯上
-            if (this.elevatorStatus == ElevatorStatus.UP && !needUp()) {
-                this.elevatorStatus = ElevatorStatus.DOWN;
+            if (getStatus() == ElevatorStatus.UP && !needUp()) {
+                setStatus(ElevatorStatus.DOWN);
             }
-            if (this.elevatorStatus == ElevatorStatus.DOWN && !needDown()) {
-                this.elevatorStatus = ElevatorStatus.UP;
+            if (getStatus() == ElevatorStatus.DOWN && !needDown()) {
+                setStatus(ElevatorStatus.UP);
             }
         }
     }
