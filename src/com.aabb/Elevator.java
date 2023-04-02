@@ -303,7 +303,7 @@ public class Elevator implements Runnable {
     private List<PersonRequest> getDownPerson() {
         List<PersonRequest> downPerson = waitPerson.stream()
                 .limit(maxPersonNum - passengerNum)
-                .filter(o -> o.getToFloor() == this.currentFloor)
+                .filter(o -> o.getFromFloor() == this.currentFloor)
                 .collect(Collectors.toList());
         waitPerson = waitPerson.stream()
                 .filter(o -> !downPerson.stream()
@@ -314,7 +314,7 @@ public class Elevator implements Runnable {
 
     private List<PersonRequest> getUpPerson() {
         List<PersonRequest> upPerson = waitPerson.stream()
-                .filter(o -> o.getToFloor() == this.currentFloor)
+                .filter(o -> o.getFromFloor() == this.currentFloor)
                 .limit(maxPersonNum - passengerNum)
                 .collect(Collectors.toList());
         waitPerson = waitPerson.stream()
