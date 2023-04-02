@@ -88,6 +88,13 @@ public class ElevatorSchedule {
         }
     }
 
+    public static void stop() {
+        // 电梯开始运行
+        for (Elevator elevator : elevators) {
+            elevator.setCanRunning(false);
+        }
+    }
+
 }
 
 

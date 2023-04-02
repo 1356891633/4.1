@@ -33,7 +33,7 @@ public class Elevator implements Runnable {
     // 关门需要的时间，单位：毫秒
     private static final int CLOSE_TIME = 200;
     private static final int MAX_FLOOR = 11;
-    boolean canRunning = true;
+    private volatile boolean canRunning = true;
     // 满载人数 默认为6
     private int maxPersonNum = 6;
     // 移动一层楼需要的时间，单位：毫秒 默认400 也就是0.4s
@@ -50,13 +50,16 @@ public class Elevator implements Runnable {
     private List<PersonRequest> waitPerson;
     // 当前电梯所在楼层
     private int currentFloor;
-
     public Elevator(int id) {
         this.id = id;
         this.currentFloor = 1;
         this.inPerson = new ArrayList<>();
         this.waitPerson = new ArrayList<>();
         this.elevatorStatus = ElevatorStatus.IDLE;
+    }
+
+    public void setCanRunning(boolean canRunning) {
+        this.canRunning = canRunning;
     }
 
     @Override

@@ -30,6 +30,7 @@ public class MainClass {
         while (true) {
             Request request = elevatorInput.nextRequest();
             if (request == null) {
+                ElevatorSchedule.stop();
                 break;
             } else {
                 ElevatorSchedule.addRequest(request);
