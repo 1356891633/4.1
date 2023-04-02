@@ -55,7 +55,11 @@ public class ElevatorSchedule {
                 bestElevator.notifyAll();
             }
         } else if (request instanceof ElevatorRequest) {
-            Elevator elevator = new Elevator(((ElevatorRequest)request).getElevatorId());
+            ElevatorRequest elevatorRequest = (ElevatorRequest)request;
+            Elevator elevator = new Elevator(elevatorRequest.getElevatorId());
+            elevator.setMaxPersonNum(elevatorRequest.getCapacity());
+            elevator.setCurrentFloor(elevatorRequest.getFloor());
+            elevator.setMoveTime(elevatorRequest.getSpeed());
             addElevator(elevator);
         } else if (request instanceof MaintainRequest) {
             Optional<Elevator> first = elevators.stream().filter(o -> o.getId() == ((MaintainRequest)request).getElevatorId()).findFirst();
