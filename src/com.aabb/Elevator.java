@@ -69,7 +69,7 @@ public class Elevator implements Runnable {
             if (getStatus() == ElevatorStatus.MAINTAIN_START) {
                 // 将所有人在原地放下
                 if (!CommonUtil.isEmptyCollection(inPerson)) {
-                    Boolean openTheDoor = openDoor();
+                    Boolean openTheDoor = maintainOpenDoor();
                     getEveryoneOffElevator();
                     closeDoor(openTheDoor);
                     // 重新调度这些人
@@ -208,6 +208,17 @@ public class Elevator implements Runnable {
         if (CommonUtil.isEmptyCollection(inPerson)) {
             setStatus(ElevatorStatus.IDLE);
         }
+        // 开门
+        try {
+            TimeUnit.MILLISECONDS.sleep(OPEN_TIME);
+            TimableOutput.println(String.format(OPEN_FORMAT, currentFloor, id));
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return true;
+    }
+
+    private Boolean maintainOpenDoor() {
         // 开门
         try {
             TimeUnit.MILLISECONDS.sleep(OPEN_TIME);
