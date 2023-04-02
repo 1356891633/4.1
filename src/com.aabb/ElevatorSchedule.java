@@ -1,11 +1,11 @@
 package com.aabb;
 
 
-import com.aabb.dto.ElevatorRequest;
-import com.aabb.dto.ExtensionPersonRequest;
-import com.aabb.dto.MaintainRequest;
-import com.aabb.dto.Request;
 import com.aabb.status.ElevatorStatus;
+import com.oocourse.elevator2.ElevatorRequest;
+import com.oocourse.elevator2.MaintainRequest;
+import com.oocourse.elevator2.PersonRequest;
+import com.oocourse.elevator2.Request;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +26,7 @@ public class ElevatorSchedule {
     public static void schedule() {
         Request request = requests.poll();
         if (request == null) {
-        } else if (request instanceof ExtensionPersonRequest) {
+        } else if (request instanceof PersonRequest) {
             Elevator bestElevator = null;
             int minDistance = Integer.MAX_VALUE;
             List<Elevator> idleElevator = elevators.stream().filter(o -> o.getStatus().equals(ElevatorStatus.IDLE))
@@ -34,7 +34,7 @@ public class ElevatorSchedule {
 
             for (Elevator elevator : idleElevator) {
                 // 如果电梯处于空闲状态，直接选择该电梯
-                int distance = Math.abs(elevator.getCurrentFloor() - ((ExtensionPersonRequest)request).getPersonRequest().getToFloor());
+                int distance = Math.abs(elevator.getCurrentFloor() - ((PersonRequest)request).getToFloor());
                 if (minDistance > distance) {
                     bestElevator = elevator;
                     minDistance = distance;
@@ -42,26 +42,26 @@ public class ElevatorSchedule {
             }
             if (bestElevator == null) {
                 for (Elevator elevator : elevators) {
-                    Boolean up = ((ExtensionPersonRequest)request).getPersonRequest().getToFloor() - ((ExtensionPersonRequest)request).getPersonRequest().getFromFloor() > 0;
-                    int distance = elevator.getDistance(((ExtensionPersonRequest)request).getPersonRequest().getFromFloor(), up);
+                    Boolean up = ((PersonRequest)request).getToFloor() - ((PersonRequest)request).getFromFloor() > 0;
+                    int distance = elevator.getDistance(((PersonRequest)request).getFromFloor(), up);
                     if (distance < minDistance) { // 选择距离最近的电梯
                         bestElevator = elevator;
                         minDistance = distance;
                     }
                 }
             }
-            bestElevator.addWaitPersonRequest(((ExtensionPersonRequest)request));
+            bestElevator.addWaitPersonRequest((PersonRequest)request);
             synchronized (bestElevator) {
                 bestElevator.notifyAll();
             }
         } else if (request instanceof ElevatorRequest) {
-            addElevator(((ElevatorRequest)request).getElevator());
+            Elevator elevator = new Elevator(((ElevatorRequest)request).getElevatorId());
+            addElevator(elevator);
         } else if (request instanceof MaintainRequest) {
             Optional<Elevator> first = elevators.stream().filter(o -> o.getId() == ((MaintainRequest)request).getElevatorId()).findFirst();
             if (first.isPresent()) {
                 Elevator elevator = first.get();
                 elevator.setStatus(ElevatorStatus.MAINTAIN_START);
-                elevator.startMaintain((MaintainRequest)request);
                 synchronized (elevator) {
                     elevator.notifyAll();
                 }

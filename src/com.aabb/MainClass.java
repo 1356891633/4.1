@@ -1,14 +1,12 @@
 package com.aabb;
 
-import com.aabb.dto.Request;
-import com.aabb.util.ElevatorInput;
+import com.oocourse.elevator2.ElevatorInput;
+import com.oocourse.elevator2.Request;
+import com.oocourse.elevator2.TimableOutput;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author yellowgg
@@ -17,6 +15,8 @@ import java.util.concurrent.TimeUnit;
 public class MainClass {
 
     public static void main(String[] args) throws IOException {
+        TimableOutput.initStartTimestamp();
+
         ElevatorInput elevatorInput = new ElevatorInput(System.in);
         List<Elevator> elevators = new ArrayList<>();
         for (int i = 1; i <= 6; i++) {
@@ -27,15 +27,13 @@ public class MainClass {
         ElevatorSchedule.setElevators(elevators);
         ElevatorSchedule.start();
 
-        ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
         while (true) {
             Request request = elevatorInput.nextRequest();
             if (request == null) {
                 break;
-            }
-            scheduledExecutorService.schedule(() -> {
+            } else {
                 ElevatorSchedule.addRequest(request);
-            }, (long)(request.getRequestTime() * 1000L), TimeUnit.MILLISECONDS);
+            }
         }
         elevatorInput.close();
     }
